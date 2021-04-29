@@ -1,0 +1,9 @@
+---
+efsProvisioner:
+  efsFileSystemId: "fs-bee641fe"
+  awsRegion: "ap-southeast-1"
+  provisionerName: "example.com/aws-efs"
+  reclaimPolicy: "recycle"
+
+podAnnotations:
+  iam.amazonaws.com/role: "EfsFullAccess"

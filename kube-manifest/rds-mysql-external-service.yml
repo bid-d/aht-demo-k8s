@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+  namespace: staging
+spec:
+  type: ExternalName
+  externalName: magento-24.ccevmjz5pv1a.ap-southeast-1.rds.amazonaws.com

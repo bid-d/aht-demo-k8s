@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment 
+metadata:
+  name: elasticsearch
+  namespace: staging
+  labels:
+    app: elasticsearch
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: elasticsearch
+  template:  
+    metadata:
+      labels: 
+        app: elasticsearch
+    spec:
+      containers:
+        - name: elasticsearch
+          image: elasticsearch:7.12.1
+          ports:
+          - containerPort: 9200
+          env:
+            - name: discovery.type
+              value: "single-node"
+          
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: elasticsearch
+  namespace: staging
+  labels:
+    app: elasticsearch
+  # annotations:
+#Important Note:  Need to add health check path annotations in service level if we are planning to use multiple targets in a load balancer  
+    # alb.ingress.kubernetes.io/healthcheck-path: /usermgmt/health-status
+spec:
+  type: NodePort
+  selector:
+    app: elasticsearch
+  ports:
+    - port: 9200
+      targetPort: 9200
