@@ -14,7 +14,7 @@ volumeBindingMode: WaitForFirstConsumer
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: nginx-content-claim
+  name: nginx-app-content-claim
   namespace: staging
 spec:
   accessModes: 

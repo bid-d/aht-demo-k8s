@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment 
 metadata:
-  name: php-fpm
+  name: nginx
   namespace: staging
   labels:
-    app: php-fpm
+    app: nginx
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: php-fpm
+      app: nginx
   template:  
     metadata:
       labels: 
-        app: php-fpm
+        app: nginx
     spec:
       volumes:
       - name: app-source
@@ -26,46 +26,46 @@ spec:
         runAsUser: 1000
         fsGroup: 1000
       containers:
-      - name: php
-        image: 041710378703.dkr.ecr.ap-southeast-1.amazonaws.com/php-fpm:7.4-7
-        volumeMounts:
-        # - mountPath: "/var/www/html"
-        #   name: shared-data
-        - mountPath: "/var/www/html"
-          name: app-source
-        - mountPath: "/var/www/.composer"
-          name: composer
-        ports:
-        - containerPort: 9001
+      # - name: php
+      #   image: 041710378703.dkr.ecr.ap-southeast-1.amazonaws.com/php-fpm:7.4-1
+      #   volumeMounts:
+      #   # - mountPath: "/var/www/html"
+      #   #   name: shared-data
+      #   - mountPath: "/var/www/html"
+      #     name: app-source
+      #   - mountPath: "/var/www/.composer"
+      #     name: composer
+      #   ports:
+      #   - containerPort: 9001
       # - name: app
       #   image: 041710378703.dkr.ecr.ap-southeast-1.amazonaws.com/app:1.0.8
       #   volumeMounts:
       #   - mountPath: "/var/www/html"
       #     name: app-source
-      # - name: nginx
-      #   image: 041710378703.dkr.ecr.ap-southeast-1.amazonaws.com/nginx:1.19.6.5
-      #   volumeMounts:
-      #   - mountPath: "/var/www/html"
-      #     name: app-source
-      #   ports:
-      #   - containerPort: 8095
+      - name: nginx
+        image: 041710378703.dkr.ecr.ap-southeast-1.amazonaws.com/nginx:1.19.6.30
+        volumeMounts:
+        - mountPath: "/var/www/html"
+          name: app-source
+        ports:
+        - containerPort: 8095
           # readOnly: true
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: php-fpm-service
+  name: nginx-service
   namespace: staging
   labels:
-    app: php-fpm
+    app: nginx
   annotations:
 #Important Note:  Need to add health check path annotations in service level if we are planning to use multiple targets in a load balancer  
     alb.ingress.kubernetes.io/healthcheck-path: /
 spec:
   type: NodePort
   selector:
-    app: php-fpm
+    app: nginx
   ports:
-    - port: 9001
-      targetPort: 9001
+    - port: 8095
+      targetPort: 8095
